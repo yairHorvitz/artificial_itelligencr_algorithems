@@ -134,7 +134,7 @@ public class main {
         }
     }
     public static HashMap<String,HashMap<String,Double>> join(Variable variables,Variable var,int countMul){
-
+        return null;
     }
 
      /*
