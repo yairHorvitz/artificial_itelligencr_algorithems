@@ -1,3 +1,4 @@
+/*
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -104,8 +105,9 @@ public class NetWork {
 
     int pointer = 0;
     public void recursive_way(List<Variable> variables,List<Double> doubles,List<String> names) {
+
         if(variables.size() == names.size()) {
-            System.out.println("names: " + names + ", value: " + doubles.get(pointer));
+            System.out.println("names: " + names + ", value: " + doubles.get(pointer));//to create new Hashmap
             pointer++;
             return;
         }
@@ -163,3 +165,4 @@ public class NetWork {
         return values;
     }
 }
+*/

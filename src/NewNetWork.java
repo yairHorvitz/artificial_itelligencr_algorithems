@@ -80,7 +80,9 @@ public class NewNetWork {
                             for (int j = 0; j < tableValuesStr.length; j++) {
                                 tableValues[j] = Double.parseDouble(tableValuesStr[j]);
                             }
+
                             Cpt cpt = new Cpt(defFor, givens, tableValues, variables);//pay attention that there isnt duplication in the definition mabey it isnt neccesery and it can be a function in definitition !!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+                           // variables.get(defFor).setCpt(cpt.getCombinations());
                             Definition definition = new Definition(defFor, givens, tableValues);
                             definitions.put(defFor, definition);
                         }

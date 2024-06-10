@@ -1,3 +1,4 @@
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -7,7 +8,8 @@ public class Variable  {
     private String[] _outcomeNames;
     private Set<Variable> parents;
     private Set<Variable> children;
-    private List<Double> cpt; // Conditional Probability Table
+    private HashMap<String,HashMap<String,Double>> cpt; // Conditional Probability Table
+    private HashMap<String,HashMap<String,Double>> factor; // Conditional Probability Table
     private boolean sendParent = false;
     private boolean sendChild = false;
     private  boolean evidence = false;
@@ -38,21 +40,29 @@ public class Variable  {
             this.parents = new HashSet<>();
             this.children = new HashSet<>();
         }
-        /*
-    public void setMarkComeFromParents() {
-        for (Variable parent : parents) {
-            if (parent.getIsComeFromParrent() == false) {
-                parent.setComeFrom();
-            }
-        }
+
+
+    public HashMap<String, HashMap<String, Double>> getFactor() {
+        return factor;
     }
-    public void setMarkFromChild() {
-        for (Variable child : children) {
-            if (child.getIsComeFromParrent() == true) {
-                child.setComeFrom();
-            }
-        }
-    }*/
+    public int getFactorySize(){
+        return factor.size();
+    }
+
+    public void setFactor(HashMap<String, HashMap<String, Double>> factor) {
+        this.factor = factor;
+    }
+
+    public HashMap<String, HashMap<String, Double>> getCpt() {
+        return cpt;
+    }
+
+    public String[] get_outcomeNames() {
+        return _outcomeNames;
+    }
+    public int getOutcomeLength(){
+        return _outcomeNames.length;
+    }
 
     public boolean  getIsSendParent() {
         return sendParent;
@@ -72,6 +82,10 @@ public class Variable  {
         return _VarName;
     }
 
+    public void setCpt(HashMap<String, HashMap<String, Double>> cpt) {
+        this.cpt = cpt;
+    }
+
     public void addParent(Variable parent) {
         this.parents.add(parent);
     }
@@ -87,7 +101,27 @@ public class Variable  {
     public void addChild(Variable var) {
         this.children.add(var);
     }
+
+    public String getName() {
+        return _VarName;
+    }
+
+
 }
 
-
+        /*
+    public void setMarkComeFromParents() {
+        for (Variable parent : parents) {
+            if (parent.getIsComeFromParrent() == false) {
+                parent.setComeFrom();
+            }
+        }
+    }
+    public void setMarkFromChild() {
+        for (Variable child : children) {
+            if (child.getIsComeFromParrent() == true) {
+                child.setComeFrom();
+            }
+        }
+    }*/
 

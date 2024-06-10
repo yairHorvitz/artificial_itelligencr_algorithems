@@ -1,7 +1,4 @@
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 public class main {
     public static void main(String[] args) {
@@ -19,7 +16,7 @@ public class main {
             System.out.println("no");
         }
     }
-
+    //what are the inputs and outputs of the function should be???????????
     public static boolean bayesBall(NewNetWork netWork, String start, String end, Set<String> evidences) {
         boolean isIndependent = true;
         Queue<Variable> queue = new LinkedList<>();
@@ -94,5 +91,73 @@ public class main {
         }
         return isIndependent;//the variable independent
     }
+    public static double[] elimination(NewNetWork netWork, Variable query, HashMap<String,String>givens){
+        double [] ans= new double[3];// answer
+        int countSum=0, countMul =0;
+
+        bayesBall(netWork, query.getName(),givens);      //The type is set and not hashmap decide after that what better
+        createFactorsFromCpt(netWork.variables,givens);   //create Factors From Cpt
+        List<Variable> sortedVariables = new ArrayList<>(netWork.variables.values()) {
+        };
+        ComparatorSortByFactorAndAscii comparator = new ComparatorSortByFactorAndAscii();//sort by factory size and ascii
+        for (Variable var :sortedVariables) {
+            Collections.sort(sortedVariables, comparator);
+        }
+
+        for(Variable var:sortedVariables) {//move on all the factors
+            join(netWork.variables,var,countMul);// union all the factors that have this variable
+            elimunateVar(var,countSum);
+        }
+
+        return ans;
+    }
+
+    public static void createFactorsFromCpt(HashMap<String, Variable> variables, HashMap<String, String> givens) {
+        for (Variable var : variables.values()) {
+            // Copy CPT to the factor
+            HashMap<String, HashMap<String, Double>> factor = var.getCpt();
+            // Set the factor for the variable
+            var.setFactor(factor);
+
+            // Remove known values from the factor
+            for (Map.Entry<String, String> given : givens.entrySet()) {
+                String evidenceVar = given.getKey();
+                String evidenceVal = given.getValue();
+
+                // Check if the factor contains the evidence variable
+                if (factor.containsKey(evidenceVar)) {
+                    HashMap<String, Double> valueMap = factor.get(evidenceVar);
+                    // Remove the values that do not match the evidence
+                    valueMap.entrySet().removeIf(entry -> !entry.getKey().equals(evidenceVal));
+                }
+            }
+        }
+    }
+    public static HashMap<String,HashMap<String,Double>> join(Variable variables,Variable var,int countMul){
+
+    }
+
+     /*
+    public  static void createFactorsFromCpt(HashMap<String,Variable> variabls,HashMap<String,String>givens)
+
+   {
+
+        for (Variable var: variabls.values()//copy all the cpt to the factor
+             ) {
+            HashMap<String,HashMap<String,Double>> factor =new HashMap<>();
+            factor = var.getCpt();
+            var.setFactor(factor);
+        }
+        //remove from all factor the all values that we know they uncorrect
+        }
+*/
+
+
+
+
+
+
+
+
 }
 
