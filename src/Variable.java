@@ -8,8 +8,8 @@ public class Variable  {
     private String[] _outcomeNames;
     private Set<Variable> parents;
     private Set<Variable> children;
-    private HashMap<String,HashMap<String,Double>> cpt; // Conditional Probability Table
-    private HashMap<String,HashMap<String,Double>> factor; // Conditional Probability Table
+    private Cpt cpt; // I think I create this in different way!!!!!!!!!!!
+    private HashMap<String,HashMap<String,Double>> factor; // I think I create this in different way!!!!!!!!!!!
     private boolean sendParent = false;
     private boolean sendChild = false;
     private  boolean evidence = false;
@@ -53,7 +53,7 @@ public class Variable  {
         this.factor = factor;
     }
 
-    public HashMap<String, HashMap<String, Double>> getCpt() {
+    public Cpt getCpt() {
         return cpt;
     }
 
@@ -82,7 +82,7 @@ public class Variable  {
         return _VarName;
     }
 
-    public void setCpt(HashMap<String, HashMap<String, Double>> cpt) {
+    public void setCpt(Cpt cpt) {
         this.cpt = cpt;
     }
 

@@ -95,10 +95,10 @@ public class main {
         double [] ans= new double[3];// answer
         int countSum=0, countMul =0;
 
-        bayesBall(netWork, query.getName(),givens);      //The type is set and not hashmap decide after that what better
-        createFactorsFromCpt(netWork.variables,givens);   //create Factors From Cpt
-        List<Variable> sortedVariables = new ArrayList<>(netWork.variables.values()) {
-        };
+        bayesBall(netWork, query.getName(),givens);//The type is set and not hashmap decide after that what better
+
+        createFactorsFromCpt(netWork.variables,givens);   //create Factors From Cpt field in the variable class
+        List<Cpt> sortedVariables = new ArrayList<>(netWork.variables.values());
         ComparatorSortByFactorAndAscii comparator = new ComparatorSortByFactorAndAscii();//sort by factory size and ascii
         for (Variable var :sortedVariables) {
             Collections.sort(sortedVariables, comparator);
@@ -133,8 +133,22 @@ public class main {
             }
         }
     }
-    public static HashMap<String,HashMap<String,Double>> join(Variable variables,Variable var,int countMul){
-        return null;
+    public static HashMap<String,HashMap<String,Double>> join(HashMap variables,Variable var,int countMul){
+        //move on all the factors
+        Set<Variable> existEleminationVar= new HashSet<>();//all the variables that in the factor exist the elemination var
+        for (Variable var : variables.values()) {
+            //union all the factors that have this variable
+            if (var.getFactor().containsKey(var.getName())) {
+                existEleminationVar.add(var);
+            }
+            //join all the variables factors in the set to one factor
+
+
+
+
+
+        }
+
     }
 
      /*

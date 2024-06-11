@@ -31,7 +31,7 @@ public class NewNetWork {
                 Document doc = builder.parse(new File(path));
                 doc.getDocumentElement().normalize();
 
-                // Parsing VARIABLE elements
+                // Parsing VARIABLE elements create HashMap of variables that contain all the variables
                 NodeList varList = doc.getElementsByTagName("VARIABLE");
                 for (int i = 0; i < varList.getLength(); i++) {
                     Node varNode = varList.item(i);
@@ -60,7 +60,7 @@ public class NewNetWork {
                     if (defNode.getNodeType() == Node.ELEMENT_NODE) {
                         Element defElement = (Element) defNode;
                         String defFor = defElement.getElementsByTagName("FOR").item(0).getTextContent();
-
+                        //create givens array
                         NodeList givenList = defElement.getElementsByTagName("GIVEN");
                         String[] givens = new String[givenList.getLength()];
                         for (int j = 0; j < givenList.getLength(); j++) {
@@ -71,7 +71,7 @@ public class NewNetWork {
                                 givens[j] = givenName;
                             }
                         }
-
+                        //create cpt
                         NodeList tableList = defElement.getElementsByTagName("TABLE");
                         if (tableList.getLength() > 0) {
                             String tableContent = tableList.item(0).getTextContent().trim();

@@ -7,16 +7,16 @@ public class Cpt {// the HashMap look like HashMap<HashMap<String-name of var, S
     private String _varName;
     private String[] _givenVarName;
     private Double[] _probabilityValues;
-    private List <HashMap<HashMap<String, String>,Double>> combinations;
-    private  HashMap<String,String> uniqeValue;
-    private HashMap<String, Variable> _allVariables;
+    private Map<Map<String, String>,Double> combinations;
+    private  Map<String,String> uniqeValue;
+    private Map<String, Variable> _allVariables;
 
     //I don't know why the methods isn't work good
     public Cpt(String varName, String[] givenVarName, Double[] probabilityValues, HashMap<String, Variable> allVariables) {
         _varName = varName;
         _givenVarName = givenVarName;
         _probabilityValues = probabilityValues;
-        combinations = new ArrayList<HashMap<HashMap<String, String>, Double>>() ;//change that isnt the permutation with same name
+        combinations = new HashMap<>();//change that isn't the permutation with same name
           uniqeValue = new HashMap<>();
         _allVariables = allVariables;
         Variable[] _allRellevantVar;
@@ -45,9 +45,8 @@ public class Cpt {// the HashMap look like HashMap<HashMap<String-name of var, S
     }
     public void createCpt(Variable [] allRelevantVariables, Double [] probabilityValues,int [] pointer){
 
-        int whichPointIbe=0; // which variable is I
-        int numOfPermutation=0; //which number of permutation is I
-
+        int whichPointIbe = 0; // which variable is I
+        int numOfPermutation = 0; //which number of permutation is I
         String key =""; // string that save the name of all the outcomes
         // run until I end to put in the Hashmap all the values
         while (probabilityValues.length>numOfPermutation){
@@ -55,7 +54,7 @@ public class Cpt {// the HashMap look like HashMap<HashMap<String-name of var, S
             if ((pointer[whichPointIbe]<allRelevantVariables.length)&&(allRelevantVariables[whichPointIbe].getOutcomeLength()>=pointer[whichPointIbe]))
             {
                 //add to uniqeValue key- varName and to the value - the current outcome
-                //pay attantion if I enter the last value
+                //pay attantion if I enter the last value I think that I enter
                   uniqeValue.put(allRelevantVariables[whichPointIbe].getVarName(),allRelevantVariables[whichPointIbe].get_outcomeNames()[pointer[whichPointIbe]]);
               //  add the outcome to the key when
                 key= key + allRelevantVariables[whichPointIbe].get_outcomeNames()[pointer[whichPointIbe]];// add the new name to the KEY
@@ -63,19 +62,17 @@ public class Cpt {// the HashMap look like HashMap<HashMap<String-name of var, S
             }
             else
             {
-                // if the amount of the outcomes smaller then the pointer outcomes we must fix it.
+                // if the amount of the outcomes smaller than the pointer outcomes we must fix it.
                 if(!(allRelevantVariables[whichPointIbe].getOutcomeLength()>=pointer[whichPointIbe])){
-                    pointer[whichPointIbe]=0;//to start from the first outcome
                     key.substring(0, key.length() - allRelevantVariables[whichPointIbe].get_outcomeNames()[pointer[whichPointIbe]].length()) ;//remove the last value in the string
+                    pointer[whichPointIbe]=0;//to start from the first outcome
                     whichPointIbe--;//return one step to before variable
                 }
                 if (pointer[whichPointIbe]==allRelevantVariables.length )//if all the outcomes exist create new Hashmap
                 {
                     //check if I need this line I think that I don't enter the last value without this!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     //uniqeValue.put(allRelevantVariables[whichPointIbe].getVarName(),allRelevantVariables[whichPointIbe].get_outcomeNames()[pointer[whichPointIbe]]);
-                    HashMap<HashMap<String, String>,Double> onePermutation/*mabey call it key*/=new HashMap<>();//if I want change the Hashmap that contain the value of all uniqeVal
-                    onePermutation.put(uniqeValue,probabilityValues[numOfPermutation]);
-                    combinations.add(onePermutation);//I think isn't neccecery but if yes I need changed the combination input
+                    combinations.put(uniqeValue,probabilityValues[numOfPermutation]);
                     //HashMap<String,Double> onePermutation=new HashMap<>();
                     //onePermutation.put(key,probabilityValues[numOfPermutation]);
                     numOfPermutation++;
@@ -92,10 +89,9 @@ public class Cpt {// the HashMap look like HashMap<HashMap<String-name of var, S
 
     }
 
-    public List<HashMap<HashMap<String, String>,Double>> getCombinations() {
+    public Map<Map<String, String>, Double> getCombinations() {
         return combinations;
     }
-
 }
 
 
