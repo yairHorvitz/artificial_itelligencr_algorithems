@@ -13,4 +13,6 @@ public class Definition {
         return _givens;
     }
 
+    public Double[] getTable() {return _table; }
+
 }

@@ -21,6 +21,8 @@ public class NewNetWork {
 
 //}
 
+
+
     public void createNetWork(String path) {
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -38,6 +40,7 @@ public class NewNetWork {
                     if (varNode.getNodeType() == Node.ELEMENT_NODE) {
                         Element varElement = (Element) varNode;
                         String varName = varElement.getElementsByTagName("NAME").item(0).getTextContent();
+
                         NodeList outcomes = varElement.getElementsByTagName("OUTCOME");
                         String[] outcomeNames = new String[outcomes.getLength()];
                         for (int j = 0; j < outcomes.getLength(); j++) {
@@ -80,9 +83,6 @@ public class NewNetWork {
                             for (int j = 0; j < tableValuesStr.length; j++) {
                                 tableValues[j] = Double.parseDouble(tableValuesStr[j]);
                             }
-
-                            Cpt cpt = new Cpt(defFor, givens, tableValues, variables);//pay attention that there isnt duplication in the definition mabey it isnt neccesery and it can be a function in definitition !!!!!!!!!!!!!!!!!!!!!!!!!!!!1
-                           // variables.get(defFor).setCpt(cpt.getCombinations());
                             Definition definition = new Definition(defFor, givens, tableValues);
                             definitions.put(defFor, definition);
                         }
@@ -98,30 +98,29 @@ public class NewNetWork {
             e.printStackTrace();
         }
 //to create the network
-        for(String value : variables.keySet()) { //for each variable put children and parents
+        for (String value : variables.keySet()) { //for each variable put children and parents
             Variable var = variables.get(value);
             Definition def = definitions.get(var.getVarName());
             def.getGivens();
-            for(String given : def.getGivens()) {
+            for (String given : def.getGivens()) {
                 Variable varParrent = variables.get(given);
                 var.addParent(varParrent);
                 varParrent.addChild(var);
             }
 
         }
-        for(String value : variables.keySet()) { // for each variable put the cpt
-            Variable var = variables.get(value);
-            Definition def = definitions.get(var.getVarName());
-          //  var.setCpt(def.getTable());
+        for (Variable var : variables.values()) { // for each variable put the cpt
+            var.setProbabilityValues(definitions.get(var.getVarName()).getTable());
 
+        }
+        for (Variable var : variables.values()) { // for each variable put the cpt
+
+            Cpt2 cpt = new Cpt2(var, variables);//pay attention that I have all the nececcry things to built cpt!!!!!!!!!!!!!!!!!11
+            var.setCpt(cpt); //that contain the right cpt in the var!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
 
 
-
-
     }
-
-
 }
 
 
