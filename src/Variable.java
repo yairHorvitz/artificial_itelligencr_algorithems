@@ -1,25 +1,44 @@
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Variable  {
     private String _VarName;
     private String[] _outcomeNames;
-    private Set<Variable> parents;
-    private Set<Variable> children;
-    private Cpt cpt; // I think I create this in different way!!!!!!!!!!!
-    private HashMap<String,HashMap<String,Double>> factor; // I think I create this in different way!!!!!!!!!!!
+    private List<Variable> parents;
+    private List<Variable> children;
+    private Cpt2 cpt; // I think I create this in different way!!!!!!!!!!!
     private boolean sendParent = false;
     private boolean sendChild = false;
     private  boolean evidence = false;
     private boolean comeFromParrent = false;
+    private Double [] probabilityValues;
 
+
+
+    public Variable(String VarName, String[] outcomeNames) {
+            _VarName = VarName;
+            _outcomeNames = outcomeNames;
+            this.parents = new ArrayList<>();
+            this.children = new ArrayList<>();
+        }
+
+    public Double[] getProbabilityValues() {
+        return probabilityValues;
+    }
+
+    public void setProbabilityValues(Double[] probabilityValues) {
+        this.probabilityValues = probabilityValues;
+    }
 
     public boolean getIsComeFromParrent() {
         return comeFromParrent;
     }
+    public void setSendChildAtStart() {
+        this.sendChild = false;
+    }
 
+    public void setSendParentAtStart(){
+        this.sendParent = false;
+    }
     public void setSendChild() {
         this.sendChild = true;
     }
@@ -29,32 +48,20 @@ public class Variable  {
     }
     public void setComeFrom(){
         if(this.getIsComeFromParrent()==false){
-        this.comeFromParrent = true;}
+            this.comeFromParrent = true;}
         else {
             this.comeFromParrent = false;
         }
     }
-    public Variable(String VarName, String[] outcomeNames) {
-            _VarName = VarName;
-            _outcomeNames = outcomeNames;
-            this.parents = new HashSet<>();
-            this.children = new HashSet<>();
-        }
 
 
-    public HashMap<String, HashMap<String, Double>> getFactor() {
-        return factor;
-    }
-    public int getFactorySize(){
-        return factor.size();
-    }
 
-    public void setFactor(HashMap<String, HashMap<String, Double>> factor) {
-        this.factor = factor;
-    }
-
-    public Cpt getCpt() {
+    public Cpt2 getCpt2() {
         return cpt;
+    }
+
+    public void setCpt(Cpt2 cpt) {
+        this.cpt = cpt;
     }
 
     public String[] get_outcomeNames() {
@@ -82,19 +89,17 @@ public class Variable  {
         return _VarName;
     }
 
-    public void setCpt(Cpt cpt) {
-        this.cpt = cpt;
-    }
+
 
     public void addParent(Variable parent) {
         this.parents.add(parent);
     }
 
-    public Set<Variable> getParents() {
+    public List<Variable> getParents() {
         return parents;
     }
 
-    public Set<Variable> getChildren() {
+    public List<Variable> getChildren() {
         return children;
     }
 
@@ -105,7 +110,6 @@ public class Variable  {
     public String getName() {
         return _VarName;
     }
-
 
 }
 
