@@ -10,16 +10,13 @@ public class main {
            evidences.put("A","T");
         elimination(netWork.variables,start,evidences);
 
-
-
-
       // boolean ans = bayesBall(netWork.variables, start, end, evidences);
        // if (ans == true) {
           //  System.out.println("yes");
         //} else {
           //  System.out.println("no");
        // }
-        for (var var : netWork.variables.values()) {
+       /* for (var var : netWork.variables.values()) {
             System.out.println(var.getVarName());
             for(String outcome: var.get_outcomeNames() ){
                 System.out.println(outcome);
@@ -49,7 +46,7 @@ public class main {
 
             printCombinations(var.getCpt2().getCombinations());
         }
-
+*/
 
     }
     //printing the combinations of the CPT
@@ -161,17 +158,18 @@ public class main {
                 dependents.add(var);
             }
         }
-        for (Variable var : dependents) {
+      /*  for (Variable var : dependents) {
             System.out.println("is dependent " + var.getVarName());
-        }
+        }*/
         for (Variable var : dependents) {//create factors from the CPT field in the variable class
             Cpt2 copyCpt = new Cpt2(var.getCpt2());
             factors.add(copyCpt);
         }
+        /*
         for (Cpt2 factor : factors) {
             System.out.println("factor: ");
             printCombinations(factor.getCombinations());
-        }
+        }*/
         //sort the factors by the size of the factor and the ascii of the variables
         ComparatorSortByFactorAndAscii comparator = new ComparatorSortByFactorAndAscii();
         factors.sort(comparator);
@@ -179,14 +177,9 @@ public class main {
             System.out.println("factors after sort: ");
             printCombinations(factor.getCombinations());
         }
-
-
-
-
-
-
-
-
+        //take the first factor and join it with the second factor
+        Cpt2 newFactor = factors.get(0).joinCpt2(factors.get(1));
+        newFactor = newFactor.eliminateVar("B");
 
 
         return null;
