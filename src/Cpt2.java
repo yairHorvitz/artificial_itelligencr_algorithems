@@ -181,7 +181,9 @@ public Cpt2() {
         newGivenVar.removeIf(e -> e.getVarName().equals(removeHidden));
         Double sumOfPermutation = 0.0;
         //move on all the cpt combinations
-        for (Map.Entry<Map<String, String>, Double> entry : this.getCombinations().entrySet()) {//mabey change with while until the key is empty
+       while (!this.getCombinations().isEmpty()){//mabey change with while until the key is empty
+           //push the first item from the combinations
+            Map.Entry<Map<String, String>, Double> entry = this.getCombinations().entrySet().iterator().next();
             Map<String, String> key = entry.getKey();
             //get the hidden variable Variable
             Variable hiddenVar = this.getGivenVar().stream().filter(e -> e.getVarName().equals(removeHidden)).findFirst().get();

@@ -178,7 +178,7 @@ public class main {
             printCombinations(factor.getCombinations());
         }
         //take the first factor and join it with the second factor
-        Cpt2 newFactor = factors.get(0).joinCpt2(factors.get(1));
+        Cpt2 newFactor = factors.get(2).joinCpt2(factors.get(1));
         newFactor = newFactor.eliminateVar("B");
 
 
