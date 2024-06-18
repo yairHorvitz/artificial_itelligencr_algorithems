@@ -9,6 +9,7 @@ public class Variable  {
     private boolean sendParent = false;
     private boolean sendChild = false;
     private  boolean evidence = false;
+    private boolean isAnsestor = false;
     private boolean comeFromParrent = false;
     private Double [] probabilityValues;
 
@@ -20,6 +21,18 @@ public class Variable  {
             this.parents = new ArrayList<>();
             this.children = new ArrayList<>();
         }
+
+    public boolean getIsAncestor() {
+        return isAnsestor;
+    }
+
+
+    public void setIsAncestor() {
+        isAnsestor = true;
+    }
+    public void restartIsAncestor() {
+        isAnsestor = false;
+    }
 
     public Double[] getProbabilityValues() {
         return probabilityValues;
@@ -84,6 +97,9 @@ public class Variable  {
     }
     public void setEvidence(){
         this.evidence = true;
+    }
+    public void setRestartEvidence(){
+        this.evidence = false;
     }
     public String getVarName() {
         return _VarName;
