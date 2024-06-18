@@ -1,21 +1,127 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public class main {
     public static void main(String[] args) {
-        NewNetWork netWork = new NewNetWork();
-        netWork.createNetWork("alarm_net.xml");
-        String start = new String("B");
-      //  String end = new String("E");
-        HashMap<String,String> evidences = new HashMap<String,String>();
-           evidences.put("A","T");
-        elimination(netWork.variables,start,evidences);
+       // double d=0.8887655443;
+       // System.out.println(String.format("%.5f", d));
+        //only un the end convert the values to 5 after the point
 
-      // boolean ans = bayesBall(netWork.variables, start, end, evidences);
-       // if (ans == true) {
-          //  System.out.println("yes");
+        //create output file
+        try {
+            // Define file paths
+            Path inputFile = Paths.get("input.txt");
+            Path outputFile = Paths.get("output.txt");
+
+            // Create the output file
+            createOutputFile(outputFile);
+
+            // Read the first line from the input file
+            List<String> lines = Files.readAllLines(inputFile);
+            if (lines.isEmpty()) {
+                System.out.println("The input file is empty.");
+                return;
+            }
+            String firstLine = lines.get(0);
+            System.out.println("First line: " + firstLine);
+            NewNetWork netWork = new NewNetWork();
+            netWork.createNetWork(firstLine);
+            // Read the rest of the lines and process them
+            String inputForAnswer = new String();
+            for (int i = 1; i < lines.size(); i++) {
+                inputForAnswer = lines.get(i);
+                String answer = netWork.answer(inputForAnswer.toString().trim());
+                writeToFile(outputFile, answer);
+              //  inputForAnswer.append(lines.get(i)).append(System.lineSeparator());
+            }
+            // Write the answer to the output file
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+        // Method to append content to a file
+        public static void writeToFile(Path file, String content) throws IOException {
+            // Add a newline character before the content
+            String contentWithNewLine = content + System.lineSeparator();
+            Files.write(file, contentWithNewLine.getBytes(), StandardOpenOption.APPEND);
+            System.out.println("Content appended to file: " + file.toString());
+        }
+
+
+
+        //read the rest lines from the file and send to answer
+
+        //write the answer to the file
+
+
+    // Method to create a new file
+    public static void createOutputFile(Path file) throws IOException {
+        // Delete the file if it already exists
+        if (Files.exists(file)) {
+            Files.delete(file);
+            System.out.println("Existing file deleted: " + file.toString());
+        }
+
+        // Create the file
+        Files.createFile(file);
+    //    System.out.println("File created: " + file.toString());
+    }
+
+
+    public static void printCombinations(Map<Map<String, String>, Double> combinations) {
+        for (Map.Entry<Map<String, String>, Double> entry : combinations.entrySet()) {
+            Map<String, String> combination = entry.getKey();
+            Double probability = entry.getValue();
+
+            StringBuilder combinationString = new StringBuilder();
+            for (Map.Entry<String, String> subEntry : combination.entrySet()) {
+                combinationString.append(subEntry.getKey()).append(": ").append(subEntry.getValue()).append(", ");
+            }
+
+            // Remove the trailing comma and space
+            if (combinationString.length() > 0) {
+                combinationString.setLength(combinationString.length() - 2);
+            }
+
+         //   System.out.println("Combination: {" + combinationString.toString() + "} Probability: " + probability);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//        String start = new String("B");
+//        //  String end = new String("E");
+//        HashMap<String, String> evidences = new HashMap<String, String>();
+//        evidences.put("A", "T");
+//        netWork.elimination(start, evidences);
+
+
+        // boolean ans = bayesBall(netWork.variables, start, end, evidences);
+        // if (ans == true) {
+        //  System.out.println("yes");
         //} else {
-          //  System.out.println("no");
-       // }
+        //  System.out.println("no");
+        // }
        /* for (var var : netWork.variables.values()) {
             System.out.println(var.getVarName());
             for(String outcome: var.get_outcomeNames() ){
@@ -48,27 +154,12 @@ public class main {
         }
 */
 
-    }
+
+
+
     //printing the combinations of the CPT
-    public static void printCombinations(Map<Map<String, String>, Double> combinations) {
-        for (Map.Entry<Map<String, String>, Double> entry : combinations.entrySet()) {
-            Map<String, String> combination = entry.getKey();
-            Double probability = entry.getValue();
 
-            StringBuilder combinationString = new StringBuilder();
-            for (Map.Entry<String, String> subEntry : combination.entrySet()) {
-                combinationString.append(subEntry.getKey()).append(": ").append(subEntry.getValue()).append(", ");
-            }
-
-            // Remove the trailing comma and space
-            if (combinationString.length() > 0) {
-                combinationString.setLength(combinationString.length() - 2);
-            }
-
-            System.out.println("Combination: {" + combinationString.toString() + "} Probability: " + probability);
-        }
-    }
-
+/*
     //what are the inputs and outputs of the function should be???????????
     public static boolean bayesBall(HashMap<String,Variable> variables, String start, String end, HashMap<String,String> evidences) {
         boolean isIndependent = true;
@@ -160,25 +251,25 @@ public class main {
         }
       /*  for (Variable var : dependents) {
             System.out.println("is dependent " + var.getVarName());
-        }*/
+        }*//*
         for (Variable var : dependents) {//create factors from the CPT field in the variable class
             Cpt2 copyCpt = new Cpt2(var.getCpt2());
             factors.add(copyCpt);
-        }
+        }*/
         /*
         for (Cpt2 factor : factors) {
             System.out.println("factor: ");
             printCombinations(factor.getCombinations());
         }*/
         //sort the factors by the size of the factor and the ascii of the variables
-        ComparatorSortByFactorAndAscii comparator = new ComparatorSortByFactorAndAscii();
+      /*  ComparatorSortByFactorAndAscii comparator = new ComparatorSortByFactorAndAscii();
         factors.sort(comparator);
         for (Cpt2 factor : factors) {
             System.out.println("factors after sort: ");
             printCombinations(factor.getCombinations());
         }
         //take the first factor and join it with the second factor
-        Cpt2 newFactor = factors.get(2).joinCpt2(factors.get(1));
+        Cpt2 newFactor = factors.get(0).joinCpt2(factors.get(1));
         newFactor = newFactor.eliminateVar("B");
 
 
@@ -190,7 +281,7 @@ public class main {
 }
 
 
-    /*
+
     public static double[] elimination(HashMap<String,Variable> variables, Variable query, HashMap<String,String>givens){
         double [] ans= new double[3];// answer
         int countSum=0, countMul =0;
@@ -257,8 +348,8 @@ public class main {
         }
 
     }
-}
-*///untill here the try!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+}*/
+//untill here the try!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
      /*
     public  static void createFactorsFromCpt(HashMap<String,Variable> variabls,HashMap<String,String>givens)
 
