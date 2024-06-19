@@ -5,7 +5,7 @@ public class Variable  {
     private String[] _outcomeNames;
     private List<Variable> parents;
     private List<Variable> children;
-    private Cpt2 cpt; // I think I create this in different way!!!!!!!!!!!
+    private Cpt2 cpt;
     private boolean sendParent = false;
     private boolean sendChild = false;
     private  boolean evidence = false;
@@ -134,19 +134,4 @@ public class Variable  {
 
 }
 
-        /*
-    public void setMarkComeFromParents() {
-        for (Variable parent : parents) {
-            if (parent.getIsComeFromParrent() == false) {
-                parent.setComeFrom();
-            }
-        }
-    }
-    public void setMarkFromChild() {
-        for (Variable child : children) {
-            if (child.getIsComeFromParrent() == true) {
-                child.setComeFrom();
-            }
-        }
-    }*/
 

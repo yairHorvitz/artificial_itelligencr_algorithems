@@ -159,65 +159,7 @@ public class Cpt2 {
         return newCpt;
     }
 
-//    @Override
-//    public String toString() {
-//        StringBuilder ans = new StringBuilder();
-//        for (Map.Entry<Map<String, String>, Double> entry : this.getCombinations().entrySet()) {
-//            ans.append(entry.getKey().entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).collect(Collectors.joining(", ")).concat(" -> " + entry.getValue() + "\n"));
-//        }
-//    }
 
-
-//        //print the uncommon variables
-//        System.out.println("uncommon variables: " + unCommonvar.stream().map(Variable::getVarName).collect(Collectors.joining(", ")));
-//        //print the common variables
-//        System.out.println("common variables: " + commonVar.stream().map(Variable::getVarName).collect(Collectors.joining(", ")));
-//        //check if one of the cpts contain all the uncommon variables
-//        boolean oneCptContainAllUncommonVar = true;
-//        if (unCommonvar.size() == 0) {
-//            return this;
-//        }
-//        for (Variable var : unCommonvar) {
-//            if (!this.givenVar.contains(var)) {
-//                oneCptContainAllUncommonVar = false;
-//                break;
-//            }
-//        }
-//        if (oneCptContainAllUncommonVar) {
-//            return this;
-//        }
-//
-//        for (Variable var : unCommonvar) {
-//            if (!other.givenVar.contains(var)) {
-//                oneCptContainAllUncommonVar = false;
-//                break;
-//            }
-//        }
-//        if (oneCptContainAllUncommonVar) {
-//            return other;
-//        }
-//
-//        //move on all the key of cpt combinations and check if the key with the common variables have the same value in the other cpt
-//        for (Map.Entry<Map<String, String>, Double> entry : this.getCombinations().entrySet()) {
-//            //built deep copy for every items
-//            Map<String, String> key = entry.getKey();
-//            //move on all the key of other cpt combinations
-//            for (Map.Entry<Map<String, String>, Double> otherEntry : other.getCombinations().entrySet()) {
-//                Map<String, String> otherKey = otherEntry.getKey();
-//                //create new <Map<String, String>, Double> that the key is the key of the two cpts and the value is multiplication the value of the two cpts
-//                Map<String, String> newKey = new HashMap<>();
-//                //add all the key of the two cpts with deep copy
-//                  newKey.putAll(key);
-//                //add all the key ot the other cpt that isnt in the key of the first cpt
-//                for (Map.Entry<String, String> otherEntryKey : otherKey.entrySet()) {
-//                    if (!newKey.containsKey(otherEntryKey.getKey())) {
-//                        newKey.put(otherEntryKey.getKey(), otherEntryKey.getValue());
-//                    }
-//                }
-//                newCpt.getCombinations().put(newKey, entry.getValue() * otherEntry.getValue());
-//                NewNetWork.countMul++;
-//            }
-//
 
     // //remove all the evidences from the factors that aren't happened
 
@@ -330,26 +272,6 @@ public class Cpt2 {
 
 
 
-        /*
-
-        //move on all the key of cpt combinations and check if the key with the common variables have the same value in the other cpt
-        for (Map.Entry<Map<String, String>, Double> entry : newCpt.getCombinations().entrySet()) {
-            Map<String, String> key = entry.getKey();
-            boolean isCommon = true;
-            for (Variable var : commonVar) {
-                if (!key.get(var.getVarName()).equals(other.getCombinations().keySet().stream().filter(e -> e.get(var.getVarName()).equals(key.get(var.getVarName()))).findFirst().get().get(var.getVarName()))) {
-                    isCommon = false;
-                    break;
-                }
-            }
-            if (isCommon) {//if the key with the common variables have the same value in the other cpt create new <Map<String, String>, Double> that the key is the key of the two cpts and the value is multiplication the value of the two cpts
-                Map<String, String> newKey = new HashMap<>();
-                newKey.putAll(key);
-                newKey.putAll(other.getCombinations().keySet().stream().filter(e -> commonVar.contains(e)).findFirst().get());
-                //multiply the values of the two cpts and put the new value in the new cpt
-                newCpt.getCombinations().put(newKey, entry.getValue() * other.getCombinations().get(other.getCombinations().keySet().stream().filter(e -> e.equals(newKey)).findFirst().get()));
-            }
-*/
 
 
 

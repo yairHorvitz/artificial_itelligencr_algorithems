@@ -19,11 +19,7 @@ public class NewNetWork {
     HashMap<String, Variable> variables = new HashMap<String, Variable>();
     HashMap<String, Definition> definitions = new HashMap<String, Definition>();
 
-//public static  void main (String[] args) {
-  //  NewNetWork netWork = new NewNetWork();
-    //netWork.createNetWork("alarm_net.xml");
 
-//}
 
     public Variable getVariable(String name) {
         return variables.get(name);
@@ -156,8 +152,6 @@ public class NewNetWork {
             return ans;
 
 
-//        String [] arr = line.split("\\|");
-//        System.out.println(Arrays.toString(arr));
         }
         //if the line is bayes ball
         else
@@ -216,7 +210,6 @@ public class NewNetWork {
             var.setSendParentAtStart();
         }
 
-        // what happen if the Start variable is evidence??????????????????????????????????????????????
         queue.add(variables.get(start));//enter the start variable to the queue
         while (!queue.isEmpty()) {
             Variable current = queue.poll();
@@ -315,10 +308,7 @@ public class NewNetWork {
             }
         }
 
-        //remove all the evidences from the factors that aren't happened
-//        for (Cpt2 factor : factors) {
-//            factor = factor.removeEvidence(evidences);
-//        }
+
         //print factors after remove evidence
         for (Cpt2 factor : factors) {
             System.out.println("factors: " + factor.getCombinations());
@@ -390,29 +380,6 @@ public class NewNetWork {
     }
 
 
-
-
-        //extract (לחלץ) the rellevant factors with the hidden variable
-        //while the hidden variables prayority queue put the comparator instance in the () is more than one factor
-        //eliminate the hidden variable from the factors
-        //return the factor to the list
-        //do it until the queue is empty
-        //stay only with the query variable factors
-        //multiply all the factors by the join
-        //normelize
-        // choose the right value
-        // create string with the right values of the query variable and multiply by the join and countsum
-
-
-
-
-        //take the first factor and join it with the second factor
-     //   Cpt2 newFactor = factors.get(0).joinCpt2(factors.get(1));
-       // newFactor = newFactor.eliminateVar("B");
-
-
-
-
     private Set<Variable> getAncestor(String query, HashMap<String,String> evidences) {
         Set<Variable> ancestors = new HashSet<>();
         Set<String> needToCheck = new HashSet<>();
@@ -445,15 +412,6 @@ public class NewNetWork {
             var.restartIsAncestor();
         }
 
-//        // Print the variables to be checked
-//        for (String varName : needToCheck) {
-//            System.out.println("The start permutation of need to check: " + varName);
-//        }
-
-        // Print the ancestors
-//        for (Variable var : ancestors) {
-//            System.out.println("The start permutation of ancestors: " + var.getVarName());
-//        }
 
         return ancestors;
     }
