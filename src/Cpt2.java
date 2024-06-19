@@ -90,13 +90,13 @@ public Cpt2() {
     }
 
     public Cpt2 joinCpt2(Cpt2 other) {
-        int countMul = 0;
         Cpt2 newCpt = new Cpt2();
         //do list of the variables that common to the two cpts
         List<Variable> commonVar = new ArrayList<>();
         List<Variable> unCommonvar = new ArrayList<>();
         List<Variable> newGivenVar = new ArrayList<>();
         newGivenVar.addAll(this.getGivenVar());
+
         for(Variable var:other.getGivenVar()){
             if ( !newGivenVar.contains(var)){
                 newGivenVar.add(var);
@@ -116,35 +116,6 @@ public Cpt2() {
                 unCommonvar.add(var);
             }
         }
-        //print the uncommon variables
-        System.out.println("uncommon variables: " + unCommonvar.stream().map(Variable::getVarName).collect(Collectors.joining(", ")));
-        //print the common variables
-        System.out.println("common variables: " + commonVar.stream().map(Variable::getVarName).collect(Collectors.joining(", ")));
-        //check if one of the cpts contain all the uncommon variables
-        boolean oneCptContainAllUncommonVar = true;
-        if (unCommonvar.size() == 0) {
-            return this;
-        }
-        for (Variable var : unCommonvar) {
-            if (!this.givenVar.contains(var)) {
-                oneCptContainAllUncommonVar = false;
-                break;
-            }
-        }
-        if (oneCptContainAllUncommonVar) {
-            return this;
-        }
-
-        for (Variable var : unCommonvar) {
-            if (!other.givenVar.contains(var)) {
-                oneCptContainAllUncommonVar = false;
-                break;
-            }
-        }
-        if (oneCptContainAllUncommonVar) {
-            return other;
-        }
-
         //move on all the key of cpt combinations and check if the key with the common variables have the same value in the other cpt
         for (Map.Entry<Map<String, String>, Double> entry : this.getCombinations().entrySet()) {
             //built deep copy for every items
@@ -153,22 +124,33 @@ public Cpt2() {
             for (Map.Entry<Map<String, String>, Double> otherEntry : other.getCombinations().entrySet()) {
                 Map<String, String> otherKey = otherEntry.getKey();
                 //create new <Map<String, String>, Double> that the key is the key of the two cpts and the value is multiplication the value of the two cpts
-                Map<String, String> newKey = new HashMap<>();
-                //add all the key of the two cpts with deep copy
-                  newKey.putAll(key);
-                //add all the key ot the other cpt that isnt in the key of the first cpt
-                for (Map.Entry<String, String> otherEntryKey : otherKey.entrySet()) {
-                    if (!newKey.containsKey(otherEntryKey.getKey())) {
-                        newKey.put(otherEntryKey.getKey(), otherEntryKey.getValue());
+               //
+                //if all the common variables have the same value in the two cpts
+                boolean isCommon = true;
+                for (Variable var : commonVar) {
+                    if (!key.get(var.getVarName()).equals(otherKey.get(var.getVarName()))) {
+                        isCommon = false;
+                        break;
                     }
                 }
-                newCpt.getCombinations().put(newKey, entry.getValue() * otherEntry.getValue());
-                countMul++;
+                //if the key with the common variables have the same value in the other cpt create new <Map<String, String>, Double>
+                if (isCommon) {
+                    Map<String, String> newKey = new HashMap<>();
+                  //  the key is the key of the two cpts and the value is multiplication the value of the two cpts
+                    newKey.putAll(key);
+                    for (Map.Entry<String, String> otherEntryKey : otherKey.entrySet()) {
+                        if (!newKey.containsKey(otherEntryKey.getKey())) {
+                            newKey.put(otherEntryKey.getKey(), otherEntryKey.getValue());
+                        }
+                    }
+                    newCpt.getCombinations().put(newKey, entry.getValue() * otherEntry.getValue());
+                    NewNetWork.countMul++;
             }
 
         }
+        }
         newCpt.getGivenVar().addAll(newGivenVar);
-        System.out.println("number of multiplication: " + countMul);
+        System.out.println("number of multiplication: " + NewNetWork.countMul);
         //print the new cpt
         System.out.println("new cpt: " + newCpt.getCombinations().entrySet().stream().map(e -> e.getKey().entrySet().stream().map(ee -> ee.getKey() + "=" + ee.getValue()).collect(Collectors.joining(", ")) + " -> " + e.getValue()).collect(Collectors.joining("\n")));
         //print the new cpt given variables
@@ -176,6 +158,59 @@ public Cpt2() {
 
         return newCpt;
     }
+
+
+//        //print the uncommon variables
+//        System.out.println("uncommon variables: " + unCommonvar.stream().map(Variable::getVarName).collect(Collectors.joining(", ")));
+//        //print the common variables
+//        System.out.println("common variables: " + commonVar.stream().map(Variable::getVarName).collect(Collectors.joining(", ")));
+//        //check if one of the cpts contain all the uncommon variables
+//        boolean oneCptContainAllUncommonVar = true;
+//        if (unCommonvar.size() == 0) {
+//            return this;
+//        }
+//        for (Variable var : unCommonvar) {
+//            if (!this.givenVar.contains(var)) {
+//                oneCptContainAllUncommonVar = false;
+//                break;
+//            }
+//        }
+//        if (oneCptContainAllUncommonVar) {
+//            return this;
+//        }
+//
+//        for (Variable var : unCommonvar) {
+//            if (!other.givenVar.contains(var)) {
+//                oneCptContainAllUncommonVar = false;
+//                break;
+//            }
+//        }
+//        if (oneCptContainAllUncommonVar) {
+//            return other;
+//        }
+//
+//        //move on all the key of cpt combinations and check if the key with the common variables have the same value in the other cpt
+//        for (Map.Entry<Map<String, String>, Double> entry : this.getCombinations().entrySet()) {
+//            //built deep copy for every items
+//            Map<String, String> key = entry.getKey();
+//            //move on all the key of other cpt combinations
+//            for (Map.Entry<Map<String, String>, Double> otherEntry : other.getCombinations().entrySet()) {
+//                Map<String, String> otherKey = otherEntry.getKey();
+//                //create new <Map<String, String>, Double> that the key is the key of the two cpts and the value is multiplication the value of the two cpts
+//                Map<String, String> newKey = new HashMap<>();
+//                //add all the key of the two cpts with deep copy
+//                  newKey.putAll(key);
+//                //add all the key ot the other cpt that isnt in the key of the first cpt
+//                for (Map.Entry<String, String> otherEntryKey : otherKey.entrySet()) {
+//                    if (!newKey.containsKey(otherEntryKey.getKey())) {
+//                        newKey.put(otherEntryKey.getKey(), otherEntryKey.getValue());
+//                    }
+//                }
+//                newCpt.getCombinations().put(newKey, entry.getValue() * otherEntry.getValue());
+//                NewNetWork.countMul++;
+//            }
+//
+
     // //remove all the evidences from the factors that aren't happened
 
     public void removeEvidence(HashMap<String, String> evidence) {
@@ -205,7 +240,7 @@ public Cpt2() {
 
     //eliminate the hidden variable from the cpt
     public Cpt2 eliminateVar(String removeHidden){
-        int countsum = 0;
+
         Cpt2 newCpt = new Cpt2();
         List<Variable> newGivenVar = new ArrayList<>();
         newGivenVar.addAll(this.getGivenVar());
@@ -231,7 +266,7 @@ public Cpt2() {
                     //add the value of the key to the sum of the permutation
                     sumOfPermutation += this.getCombinations().get(key);
                     this.getCombinations().remove(key);
-                    countsum++;
+                    NewNetWork.countAdd++;
                 }
             }
                 key.remove(hiddenVar.getVarName());
@@ -239,10 +274,9 @@ public Cpt2() {
                 sumOfPermutation = 0.0;
             }
         //print the new cpt
-        System.out.println("number of sum: " + countsum);
+        //System.out.println("number of sum: " + countsum);
         System.out.println("new cpt after elimination: " + newCpt.getCombinations().entrySet().stream().map(e -> e.getKey().entrySet().stream().map(ee -> ee.getKey() + "=" + ee.getValue()).collect(Collectors.joining(", ")) + " -> " + e.getValue()).collect(Collectors.joining("\n")));
-
-        return newCpt;
+return newCpt;
     }
     //normalize the cpt
     public void normalize(){

@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class NewNetWork {
-    int countAdd;
-    int countMul;
+    static int countAdd;
+    static int countMul;
 
     HashMap<String, Variable> variables = new HashMap<String, Variable>();
     HashMap<String, Definition> definitions = new HashMap<String, Definition>();
@@ -149,11 +149,12 @@ public class NewNetWork {
             for (String hiddenVar : hiddenArr){
                 hiddenVariables.add(hiddenVar);
             }
-            double [] ans = elimination(query,evidencesMap,hiddenVariables);
+            String ans = elimination(query,evidencesMap,hiddenVariables);
+            return ans;
 
 
-        String [] arr = line.split("\\|");
-        System.out.println(Arrays.toString(arr));
+//        String [] arr = line.split("\\|");
+//        System.out.println(Arrays.toString(arr));
         }
         //if the line is bayes ball
         else
@@ -180,10 +181,6 @@ public class NewNetWork {
                     return "no";
         }
 
-
-
-
-        return "get";
     }
     public boolean bayesBall(String start, String end, HashMap<String,String> evidences) {
         //print check that all the variables arent evidence and the fields comefromparrent and sendchild and sendparent are false
@@ -280,7 +277,7 @@ public class NewNetWork {
         return isIndependent;//the variable independent
     }
 
-    public  double [] elimination(String queryAndValue, HashMap<String,String>evidences,Queue<String>hiddenVariables){
+    public  String elimination(String queryAndValue, HashMap<String,String>evidences,Queue<String>hiddenVariables){
         String query = queryAndValue.substring(0,1);
         String valueOfTheQuery = queryAndValue.substring(2,3);
         HashMap<String,String> queryMap = new HashMap<>();
@@ -323,17 +320,8 @@ public class NewNetWork {
         //elimnate hidden from the queue
         while (!hiddenVariables.isEmpty()) {
             String hidden = hiddenVariables.poll();
-            //print check if the hidden equals to "A"
-            if(hidden.equals("A")){
-                System.out.println("they same!!!!!!!!!!!!!!!!!!!!!!!");
-            }
-            else{
-                System.out.println("they not same!!!!!!!!!!!!!!!!!!!!!!!");
-            }
-            System.out.println("hidden size: " + hiddenVariables.size());
             PriorityQueue<Cpt2> priorityQueue = new PriorityQueue<>( new ComparatorSortByFactorAndAscii());
             //extract the relevant factors with the hidden variable to the priority queue
-            // Extract the relevant factors with the hidden variable to the priority queue
             List<Cpt2> factorsToRemove = new ArrayList<>();
             for (Cpt2 factor : factors) {
                 // Check if the all varName in factor.givenVar contains the hidden variable
@@ -351,6 +339,7 @@ public class NewNetWork {
             factors.removeAll(factorsToRemove);
             //multiply all the factors by the join
             System.out.println(priorityQueue.size()+ " first time");
+
             while (priorityQueue.size() > 1) {
                 Cpt2 newFactor = priorityQueue.poll();
                 newFactor = newFactor.joinCpt2(priorityQueue.poll());
@@ -359,7 +348,7 @@ public class NewNetWork {
                //eliminate the last factor that stay in the priority queue
             System.out.println(priorityQueue.size() + " second time");
             Cpt2 newFactor = priorityQueue.poll();
-            newFactor = newFactor.eliminateVar(hidden);
+            newFactor.eliminateVar(hidden);
             factors.add(newFactor);
         }
         //after I stay only with the query variable factors
@@ -375,7 +364,12 @@ public class NewNetWork {
         factors.get(0).normalize();
         //choose the right value
         double queryValue = factors.get(0).getCombinations().get(queryMap);
+        //do the quaryValue 5
+        //create string with the right values of the query variable and multiply by the join and countsum
+        String ans = String.format("%.5f",queryValue)+ " " + NewNetWork.countAdd + " " + NewNetWork.countMul;
 
+        return ans;
+    }
 
 
 
@@ -399,8 +393,6 @@ public class NewNetWork {
        // newFactor = newFactor.eliminateVar("B");
 
 
-        return null;
-    }
 
 
     private Set<Variable> getAncestor(String query, HashMap<String,String> evidences) {

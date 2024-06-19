@@ -7,9 +7,7 @@ import java.util.*;
 
 public class main {
     public static void main(String[] args) {
-       // double d=0.8887655443;
-       // System.out.println(String.format("%.5f", d));
-        //only un the end convert the values to 5 after the point
+
 
         //create output file
         try {
