@@ -1,5 +1,4 @@
 
-
 import java.security.Key;
 import java.util.*;
 
@@ -11,13 +10,14 @@ public class Cpt {// the HashMap look like HashMap<HashMap<String-name of var, S
     private  Map<String,String> uniqeValue;
     private Map<String, Variable> _allVariables;
 
+
     //I don't know why the methods isn't work good
     public Cpt(String varName, String[] givenVarName, Double[] probabilityValues, HashMap<String, Variable> allVariables) {
         _varName = varName;
         _givenVarName = givenVarName;
         _probabilityValues = probabilityValues;
         combinations = new HashMap<>();//change that isn't the permutation with same name
-          uniqeValue = new HashMap<>();
+        uniqeValue = new HashMap<>();
         _allVariables = allVariables;
         Variable[] _allRellevantVar;
 
@@ -43,41 +43,51 @@ public class Cpt {// the HashMap look like HashMap<HashMap<String-name of var, S
         createCpt(_allRellevantVar,probabilityValues,pointer);
 
     }
+
     public void createCpt(Variable [] allRelevantVariables, Double [] probabilityValues,int [] pointer){
 
         int whichPointIbe = 0; // which variable is I
         int numOfPermutation = 0; //which number of permutation is I
-        String key =""; // string that save the name of all the outcomes
+        int howManyVarNumbered = 0;//how many variables are in the Hashmap
+       // String key =""; // string that save the name of all the outcomes
         // run until I end to put in the Hashmap all the values
         while (probabilityValues.length>numOfPermutation){
             //when not all the outcomes exist and isn't outcome out of the range
-            if ((pointer[whichPointIbe]<allRelevantVariables.length)&&(allRelevantVariables[whichPointIbe].getOutcomeLength()>=pointer[whichPointIbe]))
+            if ((whichPointIbe + 1<allRelevantVariables.length)&&(allRelevantVariables[whichPointIbe].getOutcomeLength()>=pointer[whichPointIbe]))
             {
                 //add to uniqeValue key- varName and to the value - the current outcome
                 //pay attantion if I enter the last value I think that I enter
                   uniqeValue.put(allRelevantVariables[whichPointIbe].getVarName(),allRelevantVariables[whichPointIbe].get_outcomeNames()[pointer[whichPointIbe]]);
               //  add the outcome to the key when
-                key= key + allRelevantVariables[whichPointIbe].get_outcomeNames()[pointer[whichPointIbe]];// add the new name to the KEY
-
+                howManyVarNumbered++;
+               // key= key + allRelevantVariables[whichPointIbe].get_outcomeNames()[pointer[whichPointIbe]];// add the new name to the KEY
+                whichPointIbe++;//move to the next variable
             }
             else
             {
                 // if the amount of the outcomes smaller than the pointer outcomes we must fix it.
                 if(!(allRelevantVariables[whichPointIbe].getOutcomeLength()>=pointer[whichPointIbe])){
-                    key.substring(0, key.length() - allRelevantVariables[whichPointIbe].get_outcomeNames()[pointer[whichPointIbe]].length()) ;//remove the last value in the string
+                    howManyVarNumbered--;
+                   // key.substring(0, key.length() - allRelevantVariables[whichPointIbe].get_outcomeNames()[pointer[whichPointIbe]].length()) ;//remove the last value in the string
                     pointer[whichPointIbe]=0;//to start from the first outcome
                     whichPointIbe--;//return one step to before variable
                 }
-                if (pointer[whichPointIbe]==allRelevantVariables.length )//if all the outcomes exist create new Hashmap
+                if (whichPointIbe + 1==allRelevantVariables.length )//if all the outcomes exist create new Hashmap
                 {
                     //check if I need this line I think that I don't enter the last value without this!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    //uniqeValue.put(allRelevantVariables[whichPointIbe].getVarName(),allRelevantVariables[whichPointIbe].get_outcomeNames()[pointer[whichPointIbe]]);
-                    combinations.put(uniqeValue,probabilityValues[numOfPermutation]);
+                    uniqeValue.put(allRelevantVariables[whichPointIbe].getVarName(),allRelevantVariables[whichPointIbe].get_outcomeNames()[pointer[whichPointIbe]]);
+                    if (uniqeValue.size()==allRelevantVariables.length) {//check if all the variables are in the Hashmap
+                        combinations.put(uniqeValue, probabilityValues[numOfPermutation]);
+                        uniqeValue.clear();//clear the Hashmap
+                    }
+                    howManyVarNumbered++;
+                   // key = key + allRelevantVariables[whichPointIbe].get_outcomeNames()[pointer[whichPointIbe]];// add the new name to the KEY
                     //HashMap<String,Double> onePermutation=new HashMap<>();
                     //onePermutation.put(key,probabilityValues[numOfPermutation]);
                     numOfPermutation++;
-                   // combinations.put(key,onePermutation);//check if the key and value are good I do above more one!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    key = key.substring(0, key.length() - allRelevantVariables[whichPointIbe].get_outcomeNames()[pointer[whichPointIbe]].length()) ;//remove the last value in the string
+                   // I don't know why the key shorter more than one outcome  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    howManyVarNumbered--;
+                    //key = key.substring(0, key.length() - allRelevantVariables[whichPointIbe].get_outcomeNames()[pointer[whichPointIbe]].length()) ;//remove the last value in the string
                     pointer[pointer.length-1]++;//add the last pointer value because that what added
 
                 }

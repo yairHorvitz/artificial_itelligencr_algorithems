@@ -25,6 +25,9 @@ public class NewNetWork {
 
 //}
 
+    public Variable getVariable(String name) {
+        return variables.get(name);
+    }
 
 
     public void createNetWork(String path) {
@@ -278,97 +281,112 @@ public class NewNetWork {
     }
 
     public  String elimination(String queryAndValue, HashMap<String,String>evidences,Queue<String>hiddenVariables){
+        countAdd = 0;
+        countMul = 0;
         String query = queryAndValue.substring(0,1);
         String valueOfTheQuery = queryAndValue.substring(2,3);
         HashMap<String,String> queryMap = new HashMap<>();
         queryMap.put(query,valueOfTheQuery);
-        List<Variable> dependents = new ArrayList<>();//
+        List<Variable> independents = new ArrayList<>();//
         List<Cpt2> factors = new ArrayList<>();
 
         for (var var : variables.values()) {//put all the dependent variables in the factors list
             boolean ans = bayesBall( query, var.getName(), evidences);
-            if (ans == false) {
-                dependents.add(var);
+            if (ans) {
+                independents.add(var);
             }
         }
-        //print dependents
-        for (Variable var : dependents) {
-            System.out.println("dependents: " + var.getVarName());
-        }
-        Set<Variable> ancestor = new HashSet<>();
+        Set<Variable> ancestor = getAncestor(query,evidences);
         //get ancestor(אב קדמון) of the query and the evidences
-        ancestor = getAncestor(query,evidences);
 
-
-        //enter to factor list all the variable that contain in the dependents and in the ancestor
-        for (Variable var : dependents) {
-            if (ancestor.contains(var)) {
-                Cpt2 copyCpt = new Cpt2(var.getCpt2());
-                factors.add(copyCpt);
+        for (Variable var : ancestor) {
+            boolean independent = false;
+            for (Variable given : var.getCpt2().getGivenVar()) {
+                if (independents.contains(given)) {
+                    independent = true;
+                    break;
+                }
+            }
+            if (!independent) {
+                Cpt2 factor = (new Cpt2(var.getCpt2())).removeEvidence(evidences);
+                if (!factor.getGivenVar().isEmpty()) {
+                    factors.add(factor);
+                }
             }
         }
 
         //remove all the evidences from the factors that aren't happened
-        for (Cpt2 factor : factors) {
-            factor.removeEvidence(evidences);
-        }
+//        for (Cpt2 factor : factors) {
+//            factor = factor.removeEvidence(evidences);
+//        }
         //print factors after remove evidence
         for (Cpt2 factor : factors) {
             System.out.println("factors: " + factor.getCombinations());
         }
 
+        if (factors.size() == 1) {
+            factors.get(0).normalize();
+            double queryValue = factors.get(0).getCombinations().get(queryMap);
+            return String.format("%.5f", queryValue) + ",0,0";
+        }
+
         //elimnate hidden from the queue
+        factors.sort(new ComparatorSortByFactorAndAscii());
         while (!hiddenVariables.isEmpty()) {
             String hidden = hiddenVariables.poll();
-            PriorityQueue<Cpt2> priorityQueue = new PriorityQueue<>( new ComparatorSortByFactorAndAscii());
-            //extract the relevant factors with the hidden variable to the priority queue
-            List<Cpt2> factorsToRemove = new ArrayList<>();
-            for (Cpt2 factor : factors) {
-                // Check if the all varName in factor.givenVar contains the hidden variable
-                for (Variable var : factor.getGivenVar()) {
-                    if (var.getVarName().equals(hidden)) {
-                        priorityQueue.add(factor);
-                        factorsToRemove.add(factor);  // Mark for removal
+            eliminate(factors, hidden);
+        }
+        isolate(factors, query);
+
+        if (factors.size() != 1)
+            throw new RuntimeException("Error in elimination");
+
+        Cpt2 finalFactor = factors.get(0);
+        finalFactor.normalize();
+        countAdd += finalFactor.getCombinations().size()-1;
+        double queryValue = finalFactor.getCombinations().get(queryMap);
+        return String.format("%.5f", queryValue) + "," + countAdd + "," + countMul;
+    }
+
+    public void eliminate(List<Cpt2> factors, String hidden) {
+        int hiddenIndex = isolate(factors, hidden);
+        if (hiddenIndex == -1) return;
+
+        Cpt2 hiddenFactor = factors.remove(hiddenIndex);
+        int originalSize = hiddenFactor.getCombinations().size();
+        Cpt2 newFactor = hiddenFactor.eliminateVar(hidden);
+        countAdd += originalSize - newFactor.getCombinations().size();
+
+        factors.add(newFactor);
+        factors.sort(new ComparatorSortByFactorAndAscii());
+    }
+
+    /**
+     * Isolate the hidden variable from the factors
+     */
+    public int isolate(List<Cpt2> factors, String hidden) {
+        while (true) {
+            int firstHidden = -1;
+            int secondHidden = -1;
+            for (int i = 0; i < factors.size(); i++) {
+                if (factors.get(i).getGivenVar().contains(variables.get(hidden))) {
+                    if (firstHidden == -1) {
+                        firstHidden = i;
+                    } else {
+                        secondHidden = i;
                         break;
                     }
                 }
-
             }
+            if (firstHidden == -1 || secondHidden == -1) return firstHidden;
 
-            // Remove marked factors from the original list
-            factors.removeAll(factorsToRemove);
-            //multiply all the factors by the join
-            System.out.println(priorityQueue.size()+ " first time");
-
-            while (priorityQueue.size() > 1) {
-                Cpt2 newFactor = priorityQueue.poll();
-                newFactor = newFactor.joinCpt2(priorityQueue.poll());
-                priorityQueue.add(newFactor);
-            }
-               //eliminate the last factor that stay in the priority queue
-            System.out.println(priorityQueue.size() + " second time");
-            Cpt2 newFactor = priorityQueue.poll();
-            newFactor.eliminateVar(hidden);
+            Cpt2 firstFactor = factors.remove(firstHidden);
+            Cpt2 secondFactor = factors.remove(secondHidden - 1);
+            Cpt2 newFactor = firstFactor.joinCpt2(secondFactor);
+            countMul += newFactor.getCombinations().size();
             factors.add(newFactor);
+            factors.sort(new ComparatorSortByFactorAndAscii());
         }
-        //after I stay only with the query variable factors
-        //multiply all the factors by the join
-        while (factors.size() > 1) {
-            Cpt2 newFactor = factors.get(0);
-            newFactor = newFactor.joinCpt2(factors.get(1));
-            factors.remove(0);
-            factors.remove(0);
-            factors.add(newFactor);
-        }
-        //normelize
-        factors.get(0).normalize();
-        //choose the right value
-        double queryValue = factors.get(0).getCombinations().get(queryMap);
-        //do the quaryValue 5
-        //create string with the right values of the query variable and multiply by the join and countsum
-        String ans = String.format("%.5f",queryValue)+ " " + NewNetWork.countAdd + " " + NewNetWork.countMul;
-
-        return ans;
     }
 
 

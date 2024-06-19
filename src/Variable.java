@@ -127,6 +127,11 @@ public class Variable  {
         return _VarName;
     }
 
+    @Override
+    public String toString() {
+        return _VarName;
+    }
+
 }
 
         /*
