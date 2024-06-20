@@ -129,7 +129,7 @@ public class NewNetWork {
         if(line.startsWith("P(")){
             int splitQueryEvidence;
             int splitEvidenceHidden;
-           splitQueryEvidence= line.indexOf("|");
+              splitQueryEvidence= line.indexOf("|");
               splitEvidenceHidden = line.indexOf(")");
               //in this query I need also to save is wanted value
               String query= line.substring(2,splitQueryEvidence);
@@ -159,9 +159,10 @@ public class NewNetWork {
             int splitTypes;
            splitTypes= line.indexOf("|");
            String query= line.substring(0,splitTypes);
+           int splitQuery = query.indexOf("-");
            String evidences =line.substring(splitTypes+1);
-           String start = query.substring(0,1);
-           String end = query.substring(2,3);
+           String start = query.substring(0,splitQuery);
+           String end = query.substring(splitQuery+1);
             HashMap<String, String> evidencesMap = new HashMap<>();
            if (evidences.length()!=0) {
                String[] evidencesArr = evidences.split(",");
@@ -276,8 +277,9 @@ public class NewNetWork {
     public  String elimination(String queryAndValue, HashMap<String,String>evidences,Queue<String>hiddenVariables){
         countAdd = 0;
         countMul = 0;
-        String query = queryAndValue.substring(0,1);
-        String valueOfTheQuery = queryAndValue.substring(2,3);
+        int splitQuery = queryAndValue.indexOf("=");
+        String query = queryAndValue.substring(0,splitQuery);
+        String valueOfTheQuery = queryAndValue.substring(splitQuery+1);
         HashMap<String,String> queryMap = new HashMap<>();
         queryMap.put(query,valueOfTheQuery);
         List<Variable> independents = new ArrayList<>();//

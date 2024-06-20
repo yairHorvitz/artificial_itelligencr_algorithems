@@ -12,7 +12,7 @@ public class Ex1 {
         //create output file
         try {
             // Define file paths
-            Path inputFile = Paths.get("input.txt");
+            Path inputFile = Paths.get("BayesballClassExample.txt");
             Path outputFile = Paths.get("output.txt");
 
             // Create the output file
